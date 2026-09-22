@@ -90,7 +90,7 @@ em {
   margin-left: 80px;
 }
 
-.nav a {
+.nav nav a {
   color: inherit;
   text-decoration: none;
   font-size: 13px;
@@ -98,7 +98,7 @@ em {
   transition: opacity 0.2s ease;
 }
 
-.nav a:hover {
+.nav nav a:hover {
   opacity: 0.75;
 }
 
@@ -127,13 +127,14 @@ em {
 }
 
 /* Navigation Download Resume Button */
+.nav .btn-resume,
 .btn-resume {
   display: inline-flex;
   align-items: center;
   gap: 7px;
   padding: 8px 18px;
   background: var(--ink);
-  color: var(--lime);
+  color: var(--lime) !important;
   border: 1px solid var(--ink);
   border-radius: 999px;
   font-family: inherit;
@@ -146,16 +147,19 @@ em {
   transition: all 0.25s ease;
 }
 
+.nav .btn-resume:hover,
 .btn-resume:hover {
   background: transparent;
-  color: var(--ink);
+  color: var(--ink) !important;
   border-color: var(--ink);
+  opacity: 1;
 }
 
 .btn-resume svg {
   flex-shrink: 0;
   width: 14px;
   height: 14px;
+  stroke: currentColor;
   transition: transform 0.2s ease;
 }
 
