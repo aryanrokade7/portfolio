@@ -463,132 +463,683 @@ h1 {
   border-radius: 2px;
 }
 
-/* Brain Tumor Visual */
+/* ==========================================================================
+   Project 04: MRI Brain Tumor Visual (Neural Diagnostic HUD)
+   ========================================================================== */
 .brain {
-  background: #17201d;
+  background: radial-gradient(circle at center, #11241f 0%, #081310 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(200, 243, 90, 0.12);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.brain i {
+.project:hover .brain {
+  border-color: rgba(200, 243, 90, 0.35);
+  box-shadow: inset 0 0 40px rgba(200, 243, 90, 0.05);
+}
+
+.brain-grid {
   position: absolute;
-  border: 1px solid #c8f35a;
-  border-radius: 50%;
-  width: 230px;
-  height: 230px;
-  left: 50%;
+  inset: 0;
+  background-image: linear-gradient(rgba(200, 243, 90, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200, 243, 90, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.85;
+}
+
+.brain-crosshair.x {
+  position: absolute;
+  left: 0;
+  right: 0;
   top: 50%;
-  transform: translate(-50%, -50%);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(200, 243, 90, 0.2) 20%, rgba(200, 243, 90, 0.2) 80%, transparent);
+  pointer-events: none;
 }
 
-.brain i:nth-child(2) {
-  width: 155px;
-  height: 155px;
-}
-
-.brain i:nth-child(3) {
-  width: 75px;
-  height: 75px;
-  background: var(--lime);
-}
-
-.brain b {
+.brain-crosshair.y {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
-  color: #fff;
-  font: 500 10px "DM Mono", monospace;
-  letter-spacing: 0.15em;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(200, 243, 90, 0.2) 20%, rgba(200, 243, 90, 0.2) 80%, transparent);
+  pointer-events: none;
 }
 
-/* Saturn Visual */
-.saturn {
-  background: var(--blue);
+.brain-hud-top {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font: 500 10px "DM Mono", monospace;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.brain-tag {
+  color: #728c7f;
+}
+
+.brain-status {
+  color: var(--lime);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  background: rgba(200, 243, 90, 0.08);
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(200, 243, 90, 0.25);
+}
+
+.pulse-dot.brain-dot {
+  background: var(--lime);
+  box-shadow: 0 0 6px var(--lime);
+  animation: brainPulse 1.8s ease-in-out infinite;
+}
+
+.brain-display {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
   display: grid;
   place-items: center;
 }
 
-.planet {
-  width: 105px;
-  height: 105px;
-  border-radius: 50%;
-  background: #293d7a;
-  position: absolute;
-}
-
-.ring {
-  position: absolute;
-  width: 260px;
-  height: 78px;
-  border: 22px solid #fff;
-  border-radius: 50%;
-  transform: rotate(-22deg);
-}
-
-/* VyaparFlow Visual */
-.flow {
-  background: var(--peach);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 24px;
-}
-
-.flow-map {
+.brain-ring-outer {
   position: absolute;
   inset: 0;
-  opacity: 0.25;
-  background-image: radial-gradient(#ef714a 1.5px, transparent 1.5px);
-  background-size: 18px 18px;
-}
-
-.flow-route {
-  position: absolute;
-  top: 35%;
-  left: 10%;
-  right: 15%;
-  height: 2px;
-  background: repeating-linear-gradient(90deg, #ef714a 0, #ef714a 10px, transparent 10px, transparent 18px);
-}
-
-.flow-node {
-  position: absolute;
-  width: 16px;
-  height: 16px;
+  border: 1px solid rgba(200, 243, 90, 0.32);
   border-radius: 50%;
-  background: #ef714a;
-  border: 3px solid #fff;
+  transition: border-color 0.3s ease;
 }
 
-.flow-node:nth-child(1) {
-  left: 8%;
-  top: 32%;
+.brain-ring-mid {
+  position: absolute;
+  inset: 28px;
+  border: 1px dashed rgba(200, 243, 90, 0.35);
+  border-radius: 50%;
+  animation: brainRingSpin 30s linear infinite;
 }
 
-.flow-node:nth-child(2) {
-  left: 48%;
-  top: 32%;
+.brain-ring-inner {
+  position: absolute;
+  inset: 56px;
+  border: 1px solid rgba(200, 243, 90, 0.22);
+  border-radius: 50%;
 }
 
-.flow-node:nth-child(3) {
-  right: 13%;
-  top: 32%;
-  background: var(--ink);
+.project:hover .brain-ring-outer {
+  border-color: rgba(200, 243, 90, 0.6);
+  box-shadow: 0 0 24px rgba(200, 243, 90, 0.15);
 }
 
-.flow b {
+.brain-scan-laser {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(200, 243, 90, 0.8) 50%, transparent);
+  box-shadow: 0 0 12px var(--lime);
+  animation: brainLaserScan 3.5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.project:hover .brain-scan-laser {
+  animation-duration: 2s;
+}
+
+.brain-synapse {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.brain-synapse.syn-1 {
+  width: 7px;
+  height: 7px;
+  background: var(--lime);
+  box-shadow: 0 0 10px var(--lime);
+  top: 30%;
+  right: 32%;
+  animation: brainSynapse 2.4s ease-in-out infinite;
+}
+
+.brain-synapse.syn-2 {
+  width: 5px;
+  height: 5px;
+  background: #6df5b8;
+  box-shadow: 0 0 8px #6df5b8;
+  bottom: 28%;
+  left: 32%;
+  animation: brainSynapse 3s ease-in-out infinite 0.9s;
+}
+
+.brain-core {
+  width: 14px;
+  height: 14px;
+  background: var(--lime);
+  border-radius: 50%;
+  box-shadow: 0 0 20px var(--lime), 0 0 6px #fff;
+  z-index: 2;
+}
+
+.brain-hud-bottom {
+  position: absolute;
+  bottom: 16px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.brain-hud-bottom b {
+  color: var(--lime);
+  font: 500 10px "DM Mono", monospace;
+  letter-spacing: 0.15em;
+}
+
+.brain-code {
+  color: #728c7f;
+  font: 500 9px "DM Mono", monospace;
+  letter-spacing: 0.1em;
+}
+
+@keyframes brainLaserScan {
+  0% {
+    top: 15%;
+    opacity: 0.3;
+  }
+  50% {
+    top: 85%;
+    opacity: 1;
+  }
+  100% {
+    top: 15%;
+    opacity: 0.3;
+  }
+}
+
+@keyframes brainRingSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes brainPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes brainSynapse {
+  0%, 100% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.25;
+    transform: scale(0.65);
+  }
+}
+
+/* ==========================================================================
+   Project 03: Saturn Visual (Ledger & Asset Orbit HUD)
+   ========================================================================== */
+.saturn {
+  background: radial-gradient(circle at center, #101c2e 0%, #070c17 100%);
   position: relative;
-  align-self: flex-start;
-  font: 700 28px/0.95 "Manrope", sans-serif;
-  letter-spacing: -0.05em;
-  color: #c94f27;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(112, 177, 255, 0.15);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project:hover .saturn {
+  border-color: rgba(112, 177, 255, 0.38);
+  box-shadow: inset 0 0 40px rgba(112, 177, 255, 0.06);
+}
+
+.saturn-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(112, 177, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(112, 177, 255, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.85;
+}
+
+.saturn-crosshair.x {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(112, 177, 255, 0.22) 20%, rgba(112, 177, 255, 0.22) 80%, transparent);
+  pointer-events: none;
+}
+
+.saturn-crosshair.y {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(112, 177, 255, 0.22) 20%, rgba(112, 177, 255, 0.22) 80%, transparent);
+  pointer-events: none;
+}
+
+.saturn-hud-top {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font: 500 10px "DM Mono", monospace;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.saturn-tag {
+  color: #728aa8;
+}
+
+.saturn-status {
+  color: #8ec3ff;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  background: rgba(112, 177, 255, 0.1);
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(112, 177, 255, 0.28);
+}
+
+.pulse-dot.saturn-dot {
+  background: #70b1ff;
+  box-shadow: 0 0 6px #70b1ff;
+  animation: saturnPulse 1.8s ease-in-out infinite;
+}
+
+.saturn-display {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: grid;
+  place-items: center;
+}
+
+.saturn-orbital {
+  position: absolute;
+  inset: 10px;
+  border: 1px dashed rgba(112, 177, 255, 0.25);
+  border-radius: 50%;
+  animation: saturnOrbit 20s linear infinite;
+}
+
+.project:hover .saturn-orbital {
+  animation-duration: 9s;
+}
+
+.saturn-ring-main {
+  position: absolute;
+  width: 210px;
+  height: 64px;
+  border: 2px solid rgba(183, 216, 255, 0.85);
+  border-radius: 50%;
+  transform: rotate(-24deg);
+  box-shadow: 0 0 16px rgba(112, 177, 255, 0.25);
+  display: grid;
+  place-items: center;
+  transition: transform 0.4s ease;
+}
+
+.project:hover .saturn-ring-main {
+  transform: rotate(-24deg) scale(1.05);
+}
+
+.saturn-ring-track {
+  width: 170px;
+  height: 48px;
+  border: 1px dashed rgba(112, 177, 255, 0.5);
+  border-radius: 50%;
+}
+
+.saturn-planet-core {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #426bb3, #152445);
+  box-shadow: 0 0 20px rgba(66, 107, 179, 0.5), inset 0 0 8px rgba(183, 216, 255, 0.4);
+  position: relative;
+  z-index: 1;
+}
+
+.saturn-node {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 10px #70b1ff;
+  z-index: 2;
+}
+
+.saturn-node.node-savings {
+  top: 24%;
+  right: 18%;
+  animation: saturnBlip 2.8s ease-in-out infinite;
+}
+
+.saturn-node.node-budget {
+  bottom: 24%;
+  left: 20%;
+  animation: saturnBlip 3.2s ease-in-out infinite 0.7s;
+}
+
+.saturn-hud-bottom {
+  position: absolute;
+  bottom: 16px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.saturn-hud-bottom b {
+  color: #8ec3ff;
+  font: 500 10px "DM Mono", monospace;
+  letter-spacing: 0.15em;
+}
+
+.saturn-code {
+  color: #728aa8;
+  font: 500 9px "DM Mono", monospace;
+  letter-spacing: 0.1em;
+}
+
+@keyframes saturnOrbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes saturnPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes saturnBlip {
+  0%, 100% {
+    opacity: 0.95;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.7);
+  }
+}
+
+/* ==========================================================================
+   Project 01: VyaparFlow Visual (Trade & Logistics HUD)
+   ========================================================================== */
+.flow {
+  background: radial-gradient(circle at center, #241814 0%, #0d0908 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(239, 113, 74, 0.15);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project:hover .flow {
+  border-color: rgba(239, 113, 74, 0.4);
+  box-shadow: inset 0 0 40px rgba(239, 113, 74, 0.06);
+}
+
+.flow-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(239, 113, 74, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(239, 113, 74, 0.06) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.85;
+}
+
+.flow-crosshair.x {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(239, 113, 74, 0.25) 20%, rgba(239, 113, 74, 0.25) 80%, transparent);
+  pointer-events: none;
+}
+
+.flow-crosshair.y {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(239, 113, 74, 0.25) 20%, rgba(239, 113, 74, 0.25) 80%, transparent);
+  pointer-events: none;
+}
+
+.flow-hud-top {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font: 500 10px "DM Mono", monospace;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.flow-tag {
+  color: #a48277;
 }
 
 .flow-status {
+  color: #ff916b;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  background: rgba(239, 113, 74, 0.1);
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(239, 113, 74, 0.3);
+}
+
+.pulse-dot.flow-dot {
+  background: #ff7849;
+  box-shadow: 0 0 6px #ff7849;
+  animation: flowPulse 1.8s ease-in-out infinite;
+}
+
+.flow-display {
   position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.flow-compass {
+  position: absolute;
+  inset: 0;
+  border: 1px dashed rgba(239, 113, 74, 0.3);
+  border-radius: 50%;
+  animation: flowSpin 24s linear infinite;
+}
+
+.project:hover .flow-compass {
+  animation-duration: 12s;
+}
+
+.flow-ring-outer {
+  position: absolute;
+  inset: 22px;
+  border: 1px solid rgba(239, 113, 74, 0.22);
+  border-radius: 50%;
+}
+
+.flow-route-track {
+  position: absolute;
+  top: 50%;
+  left: 12%;
+  right: 12%;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #ff7849 0, #ff7849 8px, transparent 8px, transparent 14px);
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flow-cargo-pulse {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 10px #ff7849, 0 0 4px #fff;
+  top: -3px;
+  animation: cargoTravel 3s ease-in-out infinite;
+}
+
+.flow-node {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff7849;
+  border: 2px solid #fff;
+  box-shadow: 0 0 10px rgba(255, 120, 73, 0.6);
+  z-index: 1;
+}
+
+.flow-node.node-dest {
+  background: #ffc9b5;
+}
+
+.flow-core {
+  width: 8px;
+  height: 8px;
+  background: #ff7849;
+  border-radius: 50%;
+  box-shadow: 0 0 16px #ff7849;
+  position: relative;
+  z-index: 2;
+}
+
+.flow-hud-bottom {
+  position: absolute;
+  bottom: 16px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.flow-hud-bottom b {
+  color: #ff916b;
   font: 500 10px "DM Mono", monospace;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #6a2512;
+  letter-spacing: 0.15em;
+}
+
+.flow-code {
+  color: #a48277;
+  font: 500 9px "DM Mono", monospace;
+  letter-spacing: 0.1em;
+}
+
+@keyframes cargoTravel {
+  0% {
+    left: 0%;
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    left: 95%;
+    opacity: 0.2;
+  }
+}
+
+@keyframes flowSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes flowPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
 }
 
 /* CyberSentinel Visual */
@@ -1202,17 +1753,41 @@ footer a:hover {
     margin-top: 4px;
   }
 
-  .sentinel-radar {
+  .sentinel-radar,
+  .flow-display,
+  .saturn-display,
+  .brain-display {
     width: 140px;
     height: 140px;
   }
 
-  .sentinel-ring.ring-mid {
+  .sentinel-ring.ring-mid,
+  .brain-ring-mid {
     inset: 22px;
   }
 
-  .sentinel-ring.ring-inner {
+  .sentinel-ring.ring-inner,
+  .brain-ring-inner {
     inset: 44px;
+  }
+
+  .saturn-ring-main {
+    width: 160px;
+    height: 48px;
+  }
+
+  .saturn-ring-track {
+    width: 130px;
+    height: 36px;
+  }
+
+  .saturn-planet-core {
+    width: 44px;
+    height: 44px;
+  }
+
+  .flow-ring-outer {
+    inset: 16px;
   }
 
   .about-grid {
