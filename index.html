@@ -19,14 +19,6 @@
   <!-- Scroll & Reading Progress Bar -->
   <div class="scroll-progress-bar" id="scrollProgressBar" aria-hidden="true"></div>
 
-  <!-- Interactive Pointer-Responsive Ambient Light & Atmosphere -->
-  <div class="interactive-ambient-bg" id="ambientBg" aria-hidden="true">
-    <div class="ambient-orb ambient-orb-lime" id="orbLime"></div>
-    <div class="ambient-orb ambient-orb-blue" id="orbBlue"></div>
-    <div class="ambient-orb ambient-orb-peach" id="orbPeach"></div>
-    <div class="ambient-spotlight" id="ambientSpotlight"></div>
-  </div>
-
   <!-- Header / Navigation -->
   <header class="nav wrap">
     <a class="brand" href="#top" aria-label="Aryan Rokade home">AR<span>.</span></a>
@@ -596,86 +588,6 @@
           }
         });
       });
-    })();
-  </script>
-
-  <!-- Interactive Pointer-Responsive Ambient Light & Atmosphere -->
-  <script>
-    (function () {
-      var spotlight = document.getElementById('ambientSpotlight');
-      var orbLime = document.getElementById('orbLime');
-      var orbBlue = document.getElementById('orbBlue');
-      var orbPeach = document.getElementById('orbPeach');
-      if (!spotlight) return;
-
-      var targetX = window.innerWidth * 0.5;
-      var targetY = window.innerHeight * 0.35;
-      var currentX = targetX;
-      var currentY = targetY;
-      var isMoving = false;
-      var animId = null;
-      var idleTimer = null;
-
-      function wakeAnimation() {
-        isMoving = true;
-        clearTimeout(idleTimer);
-        idleTimer = setTimeout(function () {
-          isMoving = false;
-        }, 1200);
-
-        if (!animId) {
-          animId = requestAnimationFrame(renderLoop);
-        }
-      }
-
-      function onPointerMove(x, y) {
-        targetX = x;
-        targetY = y;
-        wakeAnimation();
-      }
-
-      window.addEventListener('mousemove', function (e) {
-        onPointerMove(e.clientX, e.clientY);
-      }, { passive: true });
-
-      window.addEventListener('touchmove', function (e) {
-        if (e.touches && e.touches[0]) {
-          onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
-        }
-      }, { passive: true });
-
-      window.addEventListener('scroll', function () {
-        wakeAnimation();
-      }, { passive: true });
-
-      function renderLoop() {
-        // Ethereal smooth inertia
-        currentX += (targetX - currentX) * 0.065;
-        currentY += (targetY - currentY) * 0.065;
-
-        spotlight.style.setProperty('--pointer-x', currentX.toFixed(1) + 'px');
-        spotlight.style.setProperty('--pointer-y', currentY.toFixed(1) + 'px');
-
-        // Multi-depth 3D parallax drift for ambient orbs
-        if (orbLime) {
-          orbLime.style.transform = 'translate3d(' + (currentX * 0.032).toFixed(1) + 'px, ' + (currentY * 0.032).toFixed(1) + 'px, 0)';
-        }
-        if (orbBlue) {
-          orbBlue.style.transform = 'translate3d(' + (-currentX * 0.024).toFixed(1) + 'px, ' + (-currentY * 0.024).toFixed(1) + 'px, 0)';
-        }
-        if (orbPeach) {
-          orbPeach.style.transform = 'translate3d(' + (currentX * 0.018).toFixed(1) + 'px, ' + (-currentY * 0.018).toFixed(1) + 'px, 0)';
-        }
-
-        var dist = Math.hypot(targetX - currentX, targetY - currentY);
-        if (isMoving || dist > 0.4) {
-          animId = requestAnimationFrame(renderLoop);
-        } else {
-          animId = null;
-        }
-      }
-
-      wakeAnimation();
     })();
   </script>
 
