@@ -130,34 +130,37 @@ em {
 .btn-resume {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   padding: 8px 18px;
+  background: var(--ink);
+  color: var(--lime);
   border: 1px solid var(--ink);
   border-radius: 999px;
   font-family: inherit;
   font-size: 13px;
   font-weight: 600;
-  color: var(--ink);
-  background: transparent;
   text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
   line-height: 1;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .btn-resume:hover {
-  background: var(--ink);
-  color: var(--paper);
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--ink);
 }
 
-.btn-resume span {
-  display: inline-block;
+.btn-resume svg {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
   transition: transform 0.2s ease;
 }
 
-.btn-resume:hover span {
-  transform: translateY(1.5px);
+.btn-resume:hover svg {
+  transform: translateY(1px);
 }
 
 /* ==========================================================================
