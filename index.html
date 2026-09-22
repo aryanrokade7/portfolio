@@ -496,6 +496,96 @@
       <a href="tel:+918591224192">+91 85912 24192</a>
     </div>
   </footer>
+
+  <!-- Custom High-Tech Dynamic Cursor -->
+  <div class="custom-cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="custom-cursor-ring" id="cursorRing" aria-hidden="true">
+    <div class="ring-inner"></div>
+  </div>
+
+  <script>
+    (function () {
+      if (window.matchMedia && window.matchMedia('(hover: none) or (pointer: coarse)').matches) return;
+
+      var dot = document.getElementById('cursorDot');
+      var ring = document.getElementById('cursorRing');
+      if (!dot || !ring) return;
+
+      var mouseX = -100, mouseY = -100;
+      var ringX = -100, ringY = -100;
+      var isInitialized = false;
+
+      window.addEventListener('mousemove', function (e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
+        if (!isInitialized) {
+          isInitialized = true;
+          ringX = mouseX;
+          ringY = mouseY;
+          document.documentElement.classList.add('has-custom-cursor');
+          dot.style.opacity = '1';
+          ring.style.opacity = '1';
+        }
+
+        dot.style.transform = 'translate3d(' + mouseX + 'px, ' + mouseY + 'px, 0) translate(-50%, -50%)';
+      }, { passive: true });
+
+      document.addEventListener('mouseleave', function () {
+        dot.style.opacity = '0';
+        ring.style.opacity = '0';
+      });
+
+      document.addEventListener('mouseenter', function () {
+        if (isInitialized) {
+          dot.style.opacity = '1';
+          ring.style.opacity = '1';
+        }
+      });
+
+      document.addEventListener('mousedown', function () {
+        ring.classList.add('cursor-active');
+        dot.classList.add('cursor-active');
+      });
+
+      document.addEventListener('mouseup', function () {
+        ring.classList.remove('cursor-active');
+        dot.classList.remove('cursor-active');
+      });
+
+      function animate() {
+        ringX += (mouseX - ringX) * 0.18;
+        ringY += (mouseY - ringY) * 0.18;
+
+        ring.style.transform = 'translate3d(' + ringX + 'px, ' + ringY + 'px, 0)';
+        requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+
+      var interactiveSelector = 'a, button, input, textarea, select, .project, .social-pill, .btn-resume, .circle-link, label';
+
+      document.addEventListener('mouseover', function (e) {
+        var target = e.target.closest(interactiveSelector);
+        if (!target) return;
+
+        if (target.matches('input[type="text"], input[type="email"], textarea')) {
+          ring.classList.add('cursor-text');
+          dot.classList.add('cursor-text');
+        } else {
+          ring.classList.add('cursor-hover');
+          dot.classList.add('cursor-hover');
+        }
+      });
+
+      document.addEventListener('mouseout', function (e) {
+        var target = e.target.closest(interactiveSelector);
+        if (!target) return;
+
+        ring.classList.remove('cursor-hover', 'cursor-text');
+        dot.classList.remove('cursor-hover', 'cursor-text');
+      });
+    })();
+  </script>
 </body>
 
 </html>

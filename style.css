@@ -1997,3 +1997,106 @@ footer a:hover {
     gap: 16px;
   }
 }
+
+/* ==========================================================================
+   Custom Editorial High-Tech Dynamic Cursor
+   ========================================================================== */
+.custom-cursor-dot,
+.custom-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 999999;
+  opacity: 0;
+  will-change: transform;
+  mix-blend-mode: difference;
+}
+
+.custom-cursor-dot {
+  width: 7px;
+  height: 7px;
+  background-color: #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.custom-cursor-ring {
+  width: 0;
+  height: 0;
+  transition: opacity 0.3s ease;
+}
+
+.custom-cursor-ring .ring-inner {
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease,
+              transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hover on interactive items: expands with smooth inversion lens */
+.custom-cursor-ring.cursor-hover .ring-inner {
+  width: 52px;
+  height: 52px;
+  background-color: #fff;
+  border-color: #fff;
+}
+
+.custom-cursor-dot.cursor-hover {
+  transform: translate(-50%, -50%) scale(0);
+}
+
+/* Click / Active state */
+.custom-cursor-ring.cursor-active .ring-inner {
+  transform: translate(-50%, -50%) scale(0.8);
+}
+
+.custom-cursor-dot.cursor-active {
+  transform: translate(-50%, -50%) scale(1.4);
+}
+
+/* Text Input hover: morphs into a sleek I-beam */
+.custom-cursor-ring.cursor-text .ring-inner {
+  width: 2px;
+  height: 22px;
+  border-radius: 1px;
+  background-color: #fff;
+  border: none;
+}
+
+.custom-cursor-dot.cursor-text {
+  opacity: 0;
+}
+
+/* Hide default cursor on desktop when custom cursor is active */
+@media (hover: hover) and (pointer: fine) {
+  html.has-custom-cursor,
+  html.has-custom-cursor body,
+  html.has-custom-cursor a,
+  html.has-custom-cursor button,
+  html.has-custom-cursor input,
+  html.has-custom-cursor textarea,
+  html.has-custom-cursor select,
+  html.has-custom-cursor .project,
+  html.has-custom-cursor .social-pill,
+  html.has-custom-cursor .btn-resume,
+  html.has-custom-cursor .circle-link,
+  html.has-custom-cursor label {
+    cursor: none !important;
+  }
+}
+
+/* Always hide on touch devices */
+@media (hover: none) or (pointer: coarse) {
+  .custom-cursor-dot,
+  .custom-cursor-ring {
+    display: none !important;
+  }
+}
