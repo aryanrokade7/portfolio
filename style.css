@@ -512,10 +512,10 @@ h1 {
 .project:hover .bracket-br { transform: translate(3px, 3px); }
 
 /* ==========================================================================
-   Project 04: MRI Brain Tumor Visual (Neural Diagnostic HUD)
+   Project 04: MRI Brain Tumor Visual (Deep Learning CNN Telemetry)
    ========================================================================== */
 .brain {
-  background: radial-gradient(circle at center, #11241f 0%, #081310 100%);
+  background: radial-gradient(circle at center, #10211b 0%, #08120e 100%);
   position: relative;
   overflow: hidden;
   display: flex;
@@ -595,121 +595,171 @@ h1 {
   animation: brainPulse 1.8s ease-in-out infinite;
 }
 
-.brain-display {
+/* Rectangular CNN Telemetry Container */
+.brain-matrix-container {
   position: relative;
-  width: 190px;
-  height: 190px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.project:hover .brain-display {
-  transform: scale(1.05);
-}
-
-.brain-ring-outer {
-  position: absolute;
-  inset: 0;
-  border: 1px solid rgba(200, 243, 90, 0.32);
-  border-radius: 50%;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.project:hover .brain-ring-outer {
-  border-color: rgba(200, 243, 90, 0.65);
-  box-shadow: 0 0 24px rgba(200, 243, 90, 0.18);
-}
-
-.brain-ring-mid {
-  position: absolute;
-  inset: 26px;
-  border: 1px dashed rgba(200, 243, 90, 0.3);
-  border-radius: 50%;
-  animation: brainRingSpin 32s linear infinite;
-}
-
-/* Dimensional Neural Core */
-.brain-neural-core {
-  position: relative;
-  width: 68px;
-  height: 68px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 24px;
+  width: 86%;
+  max-width: 380px;
   z-index: 2;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.brain-hemisphere {
-  width: 28px;
-  height: 52px;
-  background: radial-gradient(circle at 35% 35%, #254e3f, #0d1e18);
-  border: 1.5px solid rgba(200, 243, 90, 0.4);
-  box-shadow: 0 0 16px rgba(200, 243, 90, 0.18), inset 0 0 8px rgba(200, 243, 90, 0.15);
+.project:hover .brain-matrix-container {
+  transform: scale(1.03);
+}
+
+/* Left: CNN Feature Box */
+.brain-feature-box {
+  background: rgba(13, 27, 22, 0.88);
+  border: 1px solid rgba(200, 243, 90, 0.28);
+  border-radius: 4px;
+  padding: 10px 12px 12px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 0 16px rgba(200, 243, 90, 0.05);
+  backdrop-filter: blur(4px);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.brain-hemisphere.left {
-  border-radius: 28px 8px 12px 28px;
+.project:hover .brain-feature-box {
+  border-color: rgba(200, 243, 90, 0.6);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.55), inset 0 0 22px rgba(200, 243, 90, 0.1);
 }
 
-.brain-hemisphere.right {
-  border-radius: 8px 28px 28px 12px;
+.feature-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font: 500 8px "DM Mono", monospace;
+  color: #728c7f;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid rgba(200, 243, 90, 0.12);
+  padding-bottom: 4px;
 }
 
-.project:hover .brain-hemisphere {
-  border-color: rgba(200, 243, 90, 0.7);
-  box-shadow: 0 0 22px rgba(200, 243, 90, 0.3), inset 0 0 10px rgba(200, 243, 90, 0.25);
+.feature-box-header .filter-count {
+  color: var(--lime);
 }
 
-.brain-neural-pulse {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 24px);
+  grid-template-rows: repeat(3, 24px);
+  gap: 4px;
+  justify-content: center;
+}
+
+.feature-grid .cell {
+  border-radius: 2px;
+  background: rgba(200, 243, 90, 0.06);
+  border: 1px solid rgba(200, 243, 90, 0.15);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-grid .cell.active-med {
+  background: rgba(200, 243, 90, 0.22);
+  border-color: rgba(200, 243, 90, 0.38);
+}
+
+.feature-grid .cell.active-high {
+  background: rgba(200, 243, 90, 0.48);
+  border-color: var(--lime);
+  box-shadow: 0 0 8px rgba(200, 243, 90, 0.35);
+}
+
+.feature-grid .cell.active-peak {
   background: var(--lime);
-  box-shadow: 0 0 14px var(--lime), 0 0 4px #fff;
-  animation: brainSynapse 2.4s ease-in-out infinite;
+  border-color: #fff;
+  box-shadow: 0 0 12px var(--lime), 0 0 4px #fff;
+  animation: cellPulse 2.4s ease-in-out infinite;
 }
 
-.brain-scan-laser {
+.feature-scan-line {
   position: absolute;
-  left: 8px;
-  right: 8px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(200, 243, 90, 0.85) 50%, transparent);
-  box-shadow: 0 0 12px var(--lime);
-  animation: brainLaserScan 3.2s ease-in-out infinite;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, var(--lime) 50%, transparent);
+  box-shadow: 0 0 8px var(--lime);
+  animation: matrixScan 3s ease-in-out infinite;
   pointer-events: none;
-  z-index: 3;
 }
 
-.brain-synapse {
-  position: absolute;
-  border-radius: 50%;
-  z-index: 3;
+/* Right: Multi-Class Diagnosis Panel */
+.brain-diagnosis-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 130px;
 }
 
-.brain-synapse.syn-1 {
-  width: 7px;
-  height: 7px;
-  background: var(--lime);
-  box-shadow: 0 0 10px var(--lime);
-  top: 24%;
-  right: 22%;
-  animation: brainSynapse 2.6s ease-in-out infinite;
+.diag-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
-.brain-synapse.syn-2 {
-  width: 6px;
-  height: 6px;
-  background: #6df5b8;
-  box-shadow: 0 0 8px #6df5b8;
-  bottom: 22%;
-  left: 20%;
-  animation: brainSynapse 3.2s ease-in-out infinite 0.8s;
+.diag-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font: 500 9px "DM Mono", monospace;
+  color: #728c7f;
+  letter-spacing: 0.08em;
+}
+
+.diag-item.peak .diag-meta {
+  color: var(--lime);
+  font-weight: 700;
+}
+
+.diag-bar-track {
+  height: 5px;
+  background: rgba(200, 243, 90, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(200, 243, 90, 0.15);
+}
+
+.diag-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease, box-shadow 0.3s ease;
+}
+
+.diag-bar-fill.peak {
+  width: 98.6%;
+  background: linear-gradient(90deg, #66b025, var(--lime));
+  box-shadow: 0 0 8px var(--lime);
+}
+
+.project:hover .diag-bar-fill.peak {
+  box-shadow: 0 0 14px var(--lime);
+}
+
+.diag-bar-fill.glioma {
+  width: 4%;
+  background: #3e5046;
+}
+
+.diag-bar-fill.meningioma {
+  width: 3%;
+  background: #3e5046;
+}
+
+.diag-bar-fill.pituitary {
+  width: 2%;
+  background: #3e5046;
 }
 
 .brain-hud-bottom {
@@ -736,27 +786,29 @@ h1 {
   letter-spacing: 0.1em;
 }
 
-@keyframes brainLaserScan {
+@keyframes matrixScan {
   0% {
-    top: 14%;
-    opacity: 0.35;
+    top: 10%;
+    opacity: 0.25;
   }
   50% {
-    top: 86%;
+    top: 90%;
     opacity: 1;
   }
   100% {
-    top: 14%;
-    opacity: 0.35;
+    top: 10%;
+    opacity: 0.25;
   }
 }
 
-@keyframes brainRingSpin {
-  from {
-    transform: rotate(0deg);
+@keyframes cellPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
   }
-  to {
-    transform: rotate(360deg);
+  50% {
+    opacity: 0.6;
+    transform: scale(0.92);
   }
 }
 
@@ -768,17 +820,6 @@ h1 {
   50% {
     opacity: 0.3;
     transform: scale(0.85);
-  }
-}
-
-@keyframes brainSynapse {
-  0%, 100% {
-    opacity: 0.95;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.35;
-    transform: scale(0.7);
   }
 }
 
@@ -1863,14 +1904,12 @@ footer a:hover {
 
   .sentinel-radar,
   .flow-display,
-  .saturn-display,
-  .brain-display {
+  .saturn-display {
     width: 140px;
     height: 140px;
   }
 
-  .sentinel-ring.ring-mid,
-  .brain-ring-mid {
+  .sentinel-ring.ring-mid {
     inset: 20px;
   }
 
@@ -1884,14 +1923,24 @@ footer a:hover {
     height: 24px;
   }
 
-  .brain-neural-core {
-    width: 52px;
-    height: 52px;
+  .brain-matrix-container {
+    width: 92%;
+    gap: 14px;
   }
 
-  .brain-hemisphere {
-    width: 22px;
-    height: 40px;
+  .feature-grid {
+    grid-template-columns: repeat(3, 20px);
+    grid-template-rows: repeat(3, 20px);
+    gap: 3px;
+  }
+
+  .brain-feature-box {
+    padding: 8px 10px;
+  }
+
+  .brain-diagnosis-panel {
+    gap: 6px;
+    min-width: 110px;
   }
 
   .saturn-ring-main {

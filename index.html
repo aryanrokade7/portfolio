@@ -311,33 +311,78 @@
               </a>
             </div>
           </div>
-          <div class="visual brain" aria-label="MRI Brain Tumor Neural Diagnostic Scanner HUD">
+          <div class="visual brain" aria-label="MRI Brain Tumor Deep Learning CNN Telemetry">
             <div class="brain-grid"></div>
             <div class="brain-crosshair x"></div>
             <div class="brain-crosshair y"></div>
             <div class="brain-hud-top">
-              <span class="brain-tag">NEURO // VGG16-AI</span>
-              <span class="brain-status"><span class="pulse-dot brain-dot"></span> 98.4% ACCURACY</span>
+              <span class="brain-tag">CNN // VGG16-MODEL</span>
+              <span class="brain-status"><span class="pulse-dot brain-dot"></span> INFERENCE: 18ms</span>
             </div>
-            <div class="brain-display">
-              <div class="hud-bracket bracket-tl"></div>
-              <div class="hud-bracket bracket-tr"></div>
-              <div class="hud-bracket bracket-bl"></div>
-              <div class="hud-bracket bracket-br"></div>
-              <div class="brain-ring-outer"></div>
-              <div class="brain-ring-mid"></div>
-              <div class="brain-scan-laser"></div>
-              <div class="brain-neural-core">
-                <div class="brain-hemisphere left"></div>
-                <div class="brain-hemisphere right"></div>
-                <div class="brain-neural-pulse"></div>
+            <div class="brain-matrix-container">
+              <!-- Left: CNN Convolutional Feature Map Grid (Rectangular) -->
+              <div class="brain-feature-box">
+                <div class="feature-box-header">
+                  <span>CONV5_3 MAP</span>
+                  <span class="filter-count">512-D</span>
+                </div>
+                <div class="feature-grid">
+                  <span class="cell active-high"></span>
+                  <span class="cell active-med"></span>
+                  <span class="cell"></span>
+                  <span class="cell active-med"></span>
+                  <span class="cell active-peak"></span>
+                  <span class="cell active-med"></span>
+                  <span class="cell"></span>
+                  <span class="cell active-med"></span>
+                  <span class="cell active-high"></span>
+                </div>
+                <div class="feature-scan-line"></div>
               </div>
-              <div class="brain-synapse syn-1" title="Feature Map Active"></div>
-              <div class="brain-synapse syn-2" title="Glioma: 0.0% / Meningioma: 0.0%"></div>
+
+              <!-- Right: VGG16 Multi-Class Confidence Breakdown -->
+              <div class="brain-diagnosis-panel">
+                <div class="diag-item peak">
+                  <div class="diag-meta">
+                    <span class="diag-label">NO TUMOR</span>
+                    <span class="diag-val">98.6%</span>
+                  </div>
+                  <div class="diag-bar-track">
+                    <div class="diag-bar-fill peak"></div>
+                  </div>
+                </div>
+                <div class="diag-item">
+                  <div class="diag-meta">
+                    <span class="diag-label">GLIOMA</span>
+                    <span class="diag-val">0.6%</span>
+                  </div>
+                  <div class="diag-bar-track">
+                    <div class="diag-bar-fill glioma"></div>
+                  </div>
+                </div>
+                <div class="diag-item">
+                  <div class="diag-meta">
+                    <span class="diag-label">MENINGIOMA</span>
+                    <span class="diag-val">0.5%</span>
+                  </div>
+                  <div class="diag-bar-track">
+                    <div class="diag-bar-fill meningioma"></div>
+                  </div>
+                </div>
+                <div class="diag-item">
+                  <div class="diag-meta">
+                    <span class="diag-label">PITUITARY</span>
+                    <span class="diag-val">0.3%</span>
+                  </div>
+                  <div class="diag-bar-track">
+                    <div class="diag-bar-fill pituitary"></div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="brain-hud-bottom">
-              <b>MRI DIAGNOSTIC SCANNER</b>
-              <span class="brain-code">STATUS // 0 LESIONS</span>
+              <b>CLASSIFICATION: NO TUMOR</b>
+              <span class="brain-code">VAL ACC // 98.4%</span>
             </div>
           </div>
         </article>
