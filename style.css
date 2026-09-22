@@ -126,8 +126,9 @@ em {
   border-color: #79a900;
 }
 
-/* Download Resume Button */
-.btn-resume {
+/* Download Resume Button & Action Buttons */
+.btn-resume,
+.project-live-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -142,16 +143,23 @@ em {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
-.btn-resume:hover {
+.btn-resume:hover,
+.project-live-btn:hover {
   background: transparent;
   color: var(--ink);
+  border-color: var(--ink);
 }
 
-.btn-resume svg {
+.btn-resume svg,
+.project-live-btn svg {
   flex-shrink: 0;
+  width: 13px;
+  height: 13px;
 }
 
 /* ==========================================================================
@@ -359,7 +367,7 @@ h1 {
   margin-bottom: 18px;
 }
 
-.project-copy > p:not(.project-type) {
+.project-copy>p:not(.project-type) {
   max-width: 470px;
   color: #45504a;
   margin-bottom: 20px;
