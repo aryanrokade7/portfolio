@@ -593,55 +593,69 @@ h1 {
 
 /* CyberSentinel Visual */
 .sentinel {
-  background: #101917;
+  background: #0d1413;
   position: relative;
+  overflow: hidden;
+  border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.sentinel-grid {
+.sentinel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.project:hover .sentinel-img {
+  transform: scale(1.03);
+}
+
+.sentinel-overlay {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(rgba(200, 243, 90, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(200, 243, 90, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background: linear-gradient(180deg, rgba(13, 20, 19, 0.05) 45%, rgba(13, 20, 19, 0.9) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 16px 18px;
+  pointer-events: none;
 }
 
-.sentinel-radar {
-  position: relative;
-  width: 160px;
-  height: 160px;
-  border: 1px solid rgba(200, 243, 90, 0.35);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
+.sentinel-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
-.sentinel-radar::after {
-  content: "";
-  position: absolute;
-  width: 80px;
-  height: 80px;
-  border: 1px dashed var(--lime);
-  border-radius: 50%;
-}
-
-.sentinel-core {
-  width: 12px;
-  height: 12px;
-  background: var(--lime);
-  border-radius: 50%;
-  box-shadow: 0 0 16px var(--lime);
-}
-
-.sentinel b {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
+.sentinel-meta b {
   color: var(--lime);
-  font: 500 10px "DM Mono", monospace;
-  letter-spacing: 0.15em;
+  font: 500 11px/1 "DM Mono", monospace;
+  letter-spacing: 0.12em;
+}
+
+.sentinel-badge {
+  color: #fff;
+  font: 500 9px/1 "DM Mono", monospace;
+  letter-spacing: 0.08em;
+  background: rgba(200, 243, 90, 0.2);
+  border: 1px solid rgba(200, 243, 90, 0.5);
+  padding: 4px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.sentinel-sub {
+  color: #a4b3ac;
+  font: 500 9px "DM Mono", monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 4px;
 }
 
 /* Legacy/Fallback Visuals */
@@ -816,6 +830,22 @@ h1 {
 
 .contact-email:hover {
   color: #e0ff8b;
+  border-color: var(--lime);
+}
+
+.contact-phone {
+  font-size: clamp(15px, 1.8vw, 20px);
+  color: #b6c3bb;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(182, 195, 187, 0.35);
+  padding-bottom: 5px;
+  display: inline-block;
+  align-self: flex-start;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.contact-phone:hover {
+  color: var(--lime);
   border-color: var(--lime);
 }
 
