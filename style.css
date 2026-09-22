@@ -126,40 +126,38 @@ em {
   border-color: #79a900;
 }
 
-/* Download Resume Button & Action Buttons */
-.btn-resume,
-.project-live-btn {
+/* Navigation Download Resume Button */
+.btn-resume {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
-  background: var(--ink);
-  color: var(--lime);
+  padding: 8px 18px;
   border: 1px solid var(--ink);
   border-radius: 999px;
-  font-family: "DM Mono", monospace;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: transparent;
   text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.2s ease;
+  line-height: 1;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-.btn-resume:hover,
-.project-live-btn:hover {
-  background: transparent;
-  color: var(--ink);
-  border-color: var(--ink);
+.btn-resume:hover {
+  background: var(--ink);
+  color: var(--paper);
 }
 
-.btn-resume svg,
-.project-live-btn svg {
-  flex-shrink: 0;
-  width: 13px;
-  height: 13px;
+.btn-resume span {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.btn-resume:hover span {
+  transform: translateY(1.5px);
 }
 
 /* ==========================================================================
@@ -926,18 +924,13 @@ footer a:hover {
   }
 
   .nav-actions {
-    gap: 12px;
+    gap: 14px;
   }
 
   .btn-resume {
-    padding: 6px 12px;
+    padding: 6px 14px;
     font-size: 11px;
-    gap: 5px;
-  }
-
-  .btn-resume svg {
-    width: 12px;
-    height: 12px;
+    gap: 4px;
   }
 
   .nav-link {
