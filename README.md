@@ -3,7 +3,7 @@
 A sleek, editorial personal portfolio website highlighting projects, technical skills, background, and contact information.
 
 ## 🚀 Live Demo
-- Portfolio: [Deployed on Vercel](https://portfolio-aryanrokade.vercel.app/) *(or see deployment steps below)*
+- Portfolio: [https://aryanrokade.vercel.app](https://aryanrokade.vercel.app)
 - Featured Project (VyaparFlow): [https://vyaparflow-smoky.vercel.app/](https://vyaparflow-smoky.vercel.app/)
 
 ## 🛠️ Tech Stack
