@@ -19,8 +19,13 @@
   <!-- Scroll & Reading Progress Bar -->
   <div class="scroll-progress-bar" id="scrollProgressBar" aria-hidden="true"></div>
 
-  <!-- Interactive Pointer-Responsive Blueprint Background -->
-  <canvas class="interactive-bg-canvas" id="bgCanvas" aria-hidden="true"></canvas>
+  <!-- Interactive Pointer-Responsive Ambient Light & Atmosphere -->
+  <div class="interactive-ambient-bg" id="ambientBg" aria-hidden="true">
+    <div class="ambient-orb ambient-orb-lime" id="orbLime"></div>
+    <div class="ambient-orb ambient-orb-blue" id="orbBlue"></div>
+    <div class="ambient-orb ambient-orb-peach" id="orbPeach"></div>
+    <div class="ambient-spotlight" id="ambientSpotlight"></div>
+  </div>
 
   <!-- Header / Navigation -->
   <header class="nav wrap">
@@ -594,38 +599,22 @@
     })();
   </script>
 
-  <!-- Interactive Pointer-Responsive Blueprint Matrix & Ambient Spotlight -->
+  <!-- Interactive Pointer-Responsive Ambient Light & Atmosphere -->
   <script>
     (function () {
-      var canvas = document.getElementById('bgCanvas');
-      if (!canvas) return;
-      var ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      var spotlight = document.getElementById('ambientSpotlight');
+      var orbLime = document.getElementById('orbLime');
+      var orbBlue = document.getElementById('orbBlue');
+      var orbPeach = document.getElementById('orbPeach');
+      if (!spotlight) return;
 
-      var width = 0, height = 0, dpr = 1;
-      var mouseX = -1000, mouseY = -1000;
-      var targetMouseX = -1000, targetMouseY = -1000;
-      var glowX = -1000, glowY = -1000;
+      var targetX = window.innerWidth * 0.5;
+      var targetY = window.innerHeight * 0.35;
+      var currentX = targetX;
+      var currentY = targetY;
       var isMoving = false;
-      var idleTimer = null;
       var animId = null;
-
-      var SPACING = 38;
-      var PROXIMITY = 180;
-      var PROXIMITY_SQ = PROXIMITY * PROXIMITY;
-
-      function resize() {
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = Math.floor(width * dpr);
-        canvas.height = Math.floor(height * dpr);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.scale(dpr, dpr);
-        draw();
-      }
-
-      window.addEventListener('resize', resize, { passive: true });
+      var idleTimer = null;
 
       function wakeAnimation() {
         isMoving = true;
@@ -640,16 +629,8 @@
       }
 
       function onPointerMove(x, y) {
-        targetMouseX = x;
-        targetMouseY = y;
-
-        if (mouseX < -500) {
-          mouseX = targetMouseX;
-          mouseY = targetMouseY;
-          glowX = targetMouseX;
-          glowY = targetMouseY;
-        }
-
+        targetX = x;
+        targetY = y;
         wakeAnimation();
       }
 
@@ -663,90 +644,38 @@
         }
       }, { passive: true });
 
-      document.addEventListener('mouseleave', function () {
-        targetMouseX = -1000;
-        targetMouseY = -1000;
-        wakeAnimation();
-      });
-
       window.addEventListener('scroll', function () {
         wakeAnimation();
       }, { passive: true });
 
-      function draw() {
-        ctx.clearRect(0, 0, width, height);
-
-        // 1. Draw smooth ambient spotlight aura
-        if (glowX > -250 && glowX < width + 250 && glowY > -250 && glowY < height + 250) {
-          var glowGrad = ctx.createRadialGradient(glowX, glowY, 0, glowX, glowY, 480);
-          glowGrad.addColorStop(0, 'rgba(200, 243, 90, 0.14)');    // Warm lime
-          glowGrad.addColorStop(0.38, 'rgba(183, 216, 255, 0.09)'); // Serene sky blue
-          glowGrad.addColorStop(0.72, 'rgba(255, 214, 188, 0.04)'); // Soft peach
-          glowGrad.addColorStop(1, 'rgba(248, 248, 245, 0)');       // Transparent paper
-          ctx.fillStyle = glowGrad;
-          ctx.fillRect(0, 0, width, height);
-        }
-
-        // 2. Draw fine engineering coordinate dot matrix
-        var cols = Math.ceil(width / SPACING) + 1;
-        var rows = Math.ceil(height / SPACING) + 1;
-
-        for (var r = 0; r < rows; r++) {
-          var y = r * SPACING;
-          for (var c = 0; c < cols; c++) {
-            var x = c * SPACING;
-
-            var dx = mouseX - x;
-            var dy = mouseY - y;
-            var distSq = dx * dx + dy * dy;
-
-            if (distSq < PROXIMITY_SQ) {
-              var dist = Math.sqrt(distSq);
-              var factor = 1 - dist / PROXIMITY; // 0 at perimeter, 1 at center
-              // Magnetic deflection: subtle push away from cursor
-              var angle = Math.atan2(dy, dx);
-              var push = Math.sin(factor * Math.PI) * 3.2;
-              var drawX = x - Math.cos(angle) * push;
-              var drawY = y - Math.sin(angle) * push;
-
-              var radius = 1.0 + factor * 1.5;
-              ctx.beginPath();
-              ctx.arc(drawX, drawY, radius, 0, Math.PI * 2);
-              ctx.fillStyle = 'rgba(105, 158, 10, ' + (0.35 + factor * 0.45) + ')';
-              ctx.fill();
-            } else {
-              // Idle background dot in fine paper-line tone
-              ctx.beginPath();
-              ctx.arc(x, y, 1.0, 0, Math.PI * 2);
-              ctx.fillStyle = 'rgba(205, 212, 205, 0.55)';
-              ctx.fill();
-            }
-          }
-        }
-      }
-
       function renderLoop() {
-        // Smooth lerp for mouse pointer proximity center
-        mouseX += (targetMouseX - mouseX) * 0.18;
-        mouseY += (targetMouseY - mouseY) * 0.18;
+        // Ethereal smooth inertia
+        currentX += (targetX - currentX) * 0.065;
+        currentY += (targetY - currentY) * 0.065;
 
-        // Ambient glow drifts with gentle, organic floating inertia
-        glowX += (targetMouseX - glowX) * 0.075;
-        glowY += (targetMouseY - glowY) * 0.075;
+        spotlight.style.setProperty('--pointer-x', currentX.toFixed(1) + 'px');
+        spotlight.style.setProperty('--pointer-y', currentY.toFixed(1) + 'px');
 
-        draw();
+        // Multi-depth 3D parallax drift for ambient orbs
+        if (orbLime) {
+          orbLime.style.transform = 'translate3d(' + (currentX * 0.032).toFixed(1) + 'px, ' + (currentY * 0.032).toFixed(1) + 'px, 0)';
+        }
+        if (orbBlue) {
+          orbBlue.style.transform = 'translate3d(' + (-currentX * 0.024).toFixed(1) + 'px, ' + (-currentY * 0.024).toFixed(1) + 'px, 0)';
+        }
+        if (orbPeach) {
+          orbPeach.style.transform = 'translate3d(' + (currentX * 0.018).toFixed(1) + 'px, ' + (-currentY * 0.018).toFixed(1) + 'px, 0)';
+        }
 
-        var mouseDist = Math.hypot(targetMouseX - mouseX, targetMouseY - mouseY);
-        var glowDist = Math.hypot(targetMouseX - glowX, targetMouseY - glowY);
-
-        if (isMoving || mouseDist > 0.4 || glowDist > 0.4) {
+        var dist = Math.hypot(targetX - currentX, targetY - currentY);
+        if (isMoving || dist > 0.4) {
           animId = requestAnimationFrame(renderLoop);
         } else {
           animId = null;
         }
       }
 
-      resize();
+      wakeAnimation();
     })();
   </script>
 
