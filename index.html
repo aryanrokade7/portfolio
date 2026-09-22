@@ -513,7 +513,14 @@
 
       var mouseX = -100, mouseY = -100;
       var ringX = -100, ringY = -100;
+      var dotX = -100, dotY = -100;
+      var dotVx = 0, dotVy = 0;
       var isInitialized = false;
+      var isHovered = false;
+
+      // Spring physics tuning for loose, slingy feel
+      var springStiffness = 0.082; // Bungee elasticity
+      var springDamping = 0.76;   // Loose rebound damping
 
       window.addEventListener('mousemove', function (e) {
         mouseX = e.clientX;
@@ -523,12 +530,12 @@
           isInitialized = true;
           ringX = mouseX;
           ringY = mouseY;
+          dotX = mouseX;
+          dotY = mouseY;
           document.documentElement.classList.add('has-custom-cursor');
           dot.style.opacity = '1';
           ring.style.opacity = '1';
         }
-
-        dot.style.transform = 'translate3d(' + mouseX + 'px, ' + mouseY + 'px, 0) translate(-50%, -50%)';
       }, { passive: true });
 
       document.addEventListener('mouseleave', function () {
@@ -545,19 +552,54 @@
 
       document.addEventListener('mousedown', function () {
         ring.classList.add('cursor-active');
-        dot.classList.add('cursor-active');
       });
 
       document.addEventListener('mouseup', function () {
         ring.classList.remove('cursor-active');
-        dot.classList.remove('cursor-active');
       });
 
       function animate() {
-        ringX += (mouseX - ringX) * 0.18;
-        ringY += (mouseY - ringY) * 0.18;
+        if (isInitialized) {
+          // Ring smoothly follows mouse anchor
+          ringX += (mouseX - ringX) * 0.22;
+          ringY += (mouseY - ringY) * 0.22;
 
-        ring.style.transform = 'translate3d(' + ringX + 'px, ' + ringY + 'px, 0)';
+          // Dot is connected by an elastic sling to the ring center
+          var fx = (ringX - dotX) * springStiffness;
+          var fy = (ringY - dotY) * springStiffness;
+
+          dotVx = (dotVx + fx) * springDamping;
+          dotVy = (dotVy + fy) * springDamping;
+
+          dotX += dotVx;
+          dotY += dotVy;
+
+          // Elastic limit: allows the dot to stretch right to / slightly past the ring rim
+          var dx = dotX - ringX;
+          var dy = dotY - ringY;
+          var dist = Math.hypot(dx, dy);
+          var maxRadius = (isHovered ? 26 : 17) + 3; // reaches right to the outer rim
+
+          if (dist > maxRadius) {
+            var angle = Math.atan2(dy, dx);
+            var excess = dist - maxRadius;
+            dotX = ringX + Math.cos(angle) * (maxRadius + excess * 0.18);
+            dotY = ringY + Math.sin(angle) * (maxRadius + excess * 0.18);
+            dotVx *= 0.7;
+            dotVy *= 0.7;
+          }
+
+          // Dynamic velocity deformation: stretches slightly along the motion vector
+          var speed = Math.hypot(dotVx, dotVy);
+          var angleDeg = Math.atan2(dotVy, dotVx) * 180 / Math.PI;
+          var stretch = Math.min(speed * 0.038, 0.45);
+          var scaleX = 1 + stretch;
+          var scaleY = 1 / (1 + stretch * 0.5);
+
+          ring.style.transform = 'translate3d(' + ringX + 'px, ' + ringY + 'px, 0)';
+          dot.style.transform = 'translate3d(' + dotX + 'px, ' + dotY + 'px, 0) translate(-50%, -50%) rotate(' + angleDeg + 'deg) scale(' + scaleX + ',' + scaleY + ')';
+        }
+
         requestAnimationFrame(animate);
       }
       requestAnimationFrame(animate);
@@ -572,6 +614,7 @@
           ring.classList.add('cursor-text');
           dot.classList.add('cursor-text');
         } else {
+          isHovered = true;
           ring.classList.add('cursor-hover');
           dot.classList.add('cursor-hover');
         }
@@ -581,6 +624,7 @@
         var target = e.target.closest(interactiveSelector);
         if (!target) return;
 
+        isHovered = false;
         ring.classList.remove('cursor-hover', 'cursor-text');
         dot.classList.remove('cursor-hover', 'cursor-text');
       });
