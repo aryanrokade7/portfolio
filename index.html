@@ -600,15 +600,15 @@
       if (!dot || !ring) return;
 
       var mouseX = -100, mouseY = -100;
+      var prevMouseX = -100, prevMouseY = -100;
       var ringX = -100, ringY = -100;
-      var dotX = -100, dotY = -100;
-      var dotVx = 0, dotVy = 0;
+      var ringVx = 0, ringVy = 0;
       var isInitialized = false;
       var isHovered = false;
 
-      // Spring physics tuning for loose, slingy feel
-      var springStiffness = 0.082; // Bungee elasticity
-      var springDamping = 0.76;   // Loose rebound damping
+      // Spring physics: loose, slingy bungee ring with elastic rebound
+      var springStiffness = 0.085; // Bungee elasticity
+      var springDamping = 0.74;    // Loose rebound damping (allows overshoot)
 
       window.addEventListener('mousemove', function (e) {
         mouseX = e.clientX;
@@ -618,8 +618,8 @@
           isInitialized = true;
           ringX = mouseX;
           ringY = mouseY;
-          dotX = mouseX;
-          dotY = mouseY;
+          prevMouseX = mouseX;
+          prevMouseY = mouseY;
           document.documentElement.classList.add('has-custom-cursor');
           dot.style.opacity = '1';
           ring.style.opacity = '1';
@@ -648,44 +648,74 @@
 
       function animate() {
         if (isInitialized) {
-          // Ring smoothly follows mouse anchor
-          ringX += (mouseX - ringX) * 0.22;
-          ringY += (mouseY - ringY) * 0.22;
+          // Dot is the precision leader anchored directly to the mouse cursor
+          var dotX = mouseX;
+          var dotY = mouseY;
 
-          // Dot is connected by an elastic sling to the ring center
-          var fx = (ringX - dotX) * springStiffness;
-          var fy = (ringY - dotY) * springStiffness;
+          // Spring force pulling the ring toward the dot in direction of motion
+          var fx = (dotX - ringX) * springStiffness;
+          var fy = (dotY - ringY) * springStiffness;
 
-          dotVx = (dotVx + fx) * springDamping;
-          dotVy = (dotVy + fy) * springDamping;
+          ringVx = (ringVx + fx) * springDamping;
+          ringVy = (ringVy + fy) * springDamping;
 
-          dotX += dotVx;
-          dotY += dotVy;
+          ringX += ringVx;
+          ringY += ringVy;
 
-          // Elastic limit: allows the dot to stretch right to / slightly past the ring rim
+          // Distance and angle from ring center to dot (front of travel)
           var dx = dotX - ringX;
           var dy = dotY - ringY;
           var dist = Math.hypot(dx, dy);
-          var maxRadius = (isHovered ? 26 : 17) + 3; // reaches right to the outer rim
+
+          // Ring radius: 17px normal (34px diameter), 26px hovered (52px diameter)
+          var ringRadius = isHovered ? 26 : 17;
+          // Loose elastic limit: allows the dot to stretch right to the rim and slightly out
+          var maxRadius = ringRadius + 4;
 
           if (dist > maxRadius) {
             var angle = Math.atan2(dy, dx);
             var excess = dist - maxRadius;
-            dotX = ringX + Math.cos(angle) * (maxRadius + excess * 0.18);
-            dotY = ringY + Math.sin(angle) * (maxRadius + excess * 0.18);
-            dotVx *= 0.7;
-            dotVy *= 0.7;
+            // The ring gets pulled forward by the bungee tether
+            ringX += Math.cos(angle) * excess;
+            ringY += Math.sin(angle) * excess;
+            ringVx += Math.cos(angle) * (excess * 0.18);
+            ringVy += Math.sin(angle) * (excess * 0.18);
           }
 
-          // Dynamic velocity deformation: stretches slightly along the motion vector
-          var speed = Math.hypot(dotVx, dotVy);
-          var angleDeg = Math.atan2(dotVy, dotVx) * 180 / Math.PI;
-          var stretch = Math.min(speed * 0.038, 0.45);
-          var scaleX = 1 + stretch;
-          var scaleY = 1 / (1 + stretch * 0.5);
+          // Mouse speed calculation for dot stretch
+          var mouseVx = mouseX - prevMouseX;
+          var mouseVy = mouseY - prevMouseY;
+          var speed = Math.hypot(mouseVx, mouseVy);
+          prevMouseX = mouseX;
+          prevMouseY = mouseY;
 
-          ring.style.transform = 'translate3d(' + ringX + 'px, ' + ringY + 'px, 0)';
-          dot.style.transform = 'translate3d(' + dotX + 'px, ' + dotY + 'px, 0) translate(-50%, -50%) rotate(' + angleDeg + 'deg) scale(' + scaleX + ',' + scaleY + ')';
+          // Dynamic velocity deformation: dot stretches slightly in the direction of movement
+          var dotTransform;
+          if (speed > 1.2) {
+            var dotAngle = Math.atan2(mouseVy, mouseVx) * 180 / Math.PI;
+            var stretch = Math.min(speed * 0.024, 0.4);
+            var scaleX = 1 + stretch;
+            var scaleY = 1 / (1 + stretch * 0.5);
+            dotTransform = 'translate3d(' + dotX + 'px, ' + dotY + 'px, 0) translate(-50%, -50%) rotate(' + dotAngle + 'deg) scale(' + scaleX + ',' + scaleY + ')';
+          } else {
+            dotTransform = 'translate3d(' + dotX + 'px, ' + dotY + 'px, 0) translate(-50%, -50%)';
+          }
+
+          // Ring organic bungee deformation: subtle stretch along its velocity vector
+          var ringTransform;
+          var ringSpeed = Math.hypot(ringVx, ringVy);
+          if (ringSpeed > 1.0 && !isHovered) {
+            var ringAngle = Math.atan2(ringVy, ringVx) * 180 / Math.PI;
+            var ringStretch = Math.min(ringSpeed * 0.016, 0.25);
+            var rScaleX = 1 + ringStretch;
+            var rScaleY = 1 / (1 + ringStretch * 0.4);
+            ringTransform = 'translate3d(' + ringX + 'px, ' + ringY + 'px, 0) rotate(' + ringAngle + 'deg) scale(' + rScaleX + ',' + rScaleY + ')';
+          } else {
+            ringTransform = 'translate3d(' + ringX + 'px, ' + ringY + 'px, 0)';
+          }
+
+          dot.style.transform = dotTransform;
+          ring.style.transform = ringTransform;
         }
 
         requestAnimationFrame(animate);
