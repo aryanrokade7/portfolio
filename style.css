@@ -22,6 +22,45 @@ html {
   scroll-behavior: smooth;
 }
 
+/* ==========================================================================
+   Lenis Smooth Scrolling & Progress Indicator
+   ========================================================================== */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Top reading & scroll progress indicator */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #c8f35a 0%, #84cc16 50%, #b7d8ff 100%);
+  transform-origin: 0% 50%;
+  transform: scaleX(0);
+  z-index: 99999;
+  pointer-events: none;
+  box-shadow: 0 0 10px rgba(200, 243, 90, 0.45);
+}
+
 body {
   margin: 0;
   background: var(--paper);
@@ -95,11 +134,29 @@ em {
   text-decoration: none;
   font-size: 13px;
   font-weight: 600;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  position: relative;
+  padding: 4px 0;
 }
 
 .nav nav a:hover {
   opacity: 0.75;
+}
+
+.nav nav a.nav-link-active {
+  color: #17201d;
+  opacity: 1;
+}
+
+.nav nav a.nav-link-active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #79a900;
+  border-radius: 1px;
 }
 
 .nav-actions {

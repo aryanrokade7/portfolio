@@ -16,6 +16,9 @@
 </head>
 
 <body>
+  <!-- Scroll & Reading Progress Bar -->
+  <div class="scroll-progress-bar" id="scrollProgressBar" aria-hidden="true"></div>
+
   <!-- Header / Navigation -->
   <header class="nav wrap">
     <a class="brand" href="#top" aria-label="Aryan Rokade home">AR<span>.</span></a>
@@ -502,6 +505,91 @@
   <div class="custom-cursor-ring" id="cursorRing" aria-hidden="true">
     <div class="ring-inner"></div>
   </div>
+
+  <!-- Modern Fluid Inertial Smooth Scrolling (Lenis) -->
+  <script src="lenis.min.js"></script>
+  <script>
+    (function () {
+      if (typeof Lenis === 'undefined') return;
+
+      var lenis = new Lenis({
+        duration: 1.15,
+        easing: function (t) {
+          return Math.min(1, 1.001 - Math.pow(2, -10 * t));
+        },
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+        wheelMultiplier: 1.0,
+        touchMultiplier: 1.2,
+        infinite: false
+      });
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      // Scroll progress bar and active navigation state
+      var progressBar = document.getElementById('scrollProgressBar');
+      var navWork = document.querySelector('.nav nav a[href="#work"]');
+      var navAbout = document.querySelector('.nav nav a[href="#about"]');
+      var navContact = document.querySelector('.nav nav a[href="#contact"]');
+      var secWork = document.getElementById('work');
+      var secAbout = document.getElementById('about');
+      var secContact = document.getElementById('contact');
+
+      var sections = [
+        { el: secWork, link: navWork },
+        { el: secAbout, link: navAbout },
+        { el: secContact, link: navContact }
+      ];
+
+      lenis.on('scroll', function (e) {
+        if (progressBar) {
+          progressBar.style.transform = 'scaleX(' + e.progress + ')';
+        }
+
+        var scrollY = e.scroll;
+        for (var i = 0; i < sections.length; i++) {
+          var item = sections[i];
+          if (!item.el || !item.link) continue;
+          var top = item.el.offsetTop;
+          var height = item.el.offsetHeight;
+          if (scrollY >= top - 200 && scrollY < top + height - 200) {
+            item.link.classList.add('nav-link-active');
+          } else {
+            item.link.classList.remove('nav-link-active');
+          }
+        }
+      });
+
+      // Smooth anchor link scrolling
+      document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+        anchor.addEventListener('click', function (e) {
+          var targetId = this.getAttribute('href');
+          if (!targetId || targetId === '#') return;
+
+          var targetEl = targetId === '#top' ? 0 : document.querySelector(targetId);
+          if (targetEl !== null) {
+            e.preventDefault();
+            lenis.scrollTo(targetEl, {
+              offset: targetId === '#top' ? 0 : -25,
+              duration: 1.2,
+              easing: function (t) {
+                return Math.min(1, 1.001 - Math.pow(2, -10 * t));
+              }
+            });
+
+            if (history.pushState && targetId !== '#top') {
+              history.pushState(null, null, targetId);
+            }
+          }
+        });
+      });
+    })();
+  </script>
 
   <script>
     (function () {
